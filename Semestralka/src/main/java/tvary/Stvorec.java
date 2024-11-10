@@ -1,32 +1,34 @@
-import java.awt.geom.Ellipse2D;
+package tvary;
+
+import java.awt.Rectangle;
 
 /**
- * Kruh, s ktorým možno pohybovať a nakreslí sa na plátno.
+ * Štvorec, s ktorým možno pohybovať a nakreslí sa na plátno.
  * 
  * @author  Michael Kolling and David J. Barnes
  * @version 1.0  (15 July 2000)
  */
 
-public class Kruh {
-    private int priemer;
+public class Stvorec {
+    private int strana;
     private int lavyHornyX;
     private int lavyHornyY;
     private String farba;
     private boolean jeViditelny;
-    
+
     /**
-     * Vytvor nový kruh preddefinovanej farby na preddefinovanej pozícii. 
+     * Vytvor nový štvorec preddefinovanej farby na preddefinovanej pozícii.
      */
-    public Kruh() {
-        this.priemer = 30;
-        this.lavyHornyX = 20;
-        this.lavyHornyY = 60;
-        this.farba = "blue";
+    public Stvorec() {
+        this.strana = 30;
+        this.lavyHornyX = 60;
+        this.lavyHornyY = 50;
+        this.farba = "red";
         this.jeViditelny = false;
     }
 
     /**
-     * (Kruh) Zobraz sa.
+     * (Štvorec) Zobraz sa.
      */
     public void zobraz() {
         this.jeViditelny = true;
@@ -34,7 +36,7 @@ public class Kruh {
     }
     
     /**
-     * (Kruh) Skry sa.
+     * (Štvorec) Skry sa.
      */
     public void skry() {
         this.zmaz();
@@ -42,35 +44,35 @@ public class Kruh {
     }
     
     /**
-     * (Kruh) Posuň sa vpravo o pevnú dĺžku. 
+     * (Štvorec) Posuň sa vpravo o pevnú dĺžku.
      */
     public void posunVpravo() {
         this.posunVodorovne(20);
     }
 
     /**
-     * (Kruh) Posuň sa vľavo o pevnú dĺžku. 
+     * (Štvorec) Posuň sa vľavo o pevnú dĺžku.
      */
     public void posunVlavo() {
         this.posunVodorovne(-20);
     }
 
     /**
-     * (Kruh) Posuň sa hore o pevnú dĺžku. 
+     * (Štvorec) Posuň sa hore o pevnú dĺžku.
      */
     public void posunHore() {
         this.posunZvisle(-20);
     }
 
     /**
-     * (Kruh) Posuň sa dole o pevnú dĺžku. 
+     * (Štvorec) Posuň sa dole o pevnú dĺžku.
      */
     public void posunDole() {
         this.posunZvisle(20);
     }
 
     /**
-     * (Kruh) Posuň sa vodorovne o dĺžku danú parametrom. 
+     * (Štvorec) Posuň sa vodorovne o dĺžku danú parametrom.
      */
     public void posunVodorovne(int vzdialenost) {
         this.zmaz();
@@ -79,7 +81,7 @@ public class Kruh {
     }
 
     /**
-     * (Kruh) Posuň sa zvisle o dĺžku danú parametrom. 
+     * (Štvorec) Posuň sa zvisle o dĺžku danú parametrom.
      */
     public void posunZvisle(int vzdialenost) {
         this.zmaz();
@@ -88,7 +90,7 @@ public class Kruh {
     }
 
     /**
-     * (Kruh) Posuň sa pomaly vodorovne o dĺžku danú parametrom. 
+     * (Štvorec) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
      */
     public void pomalyPosunVodorovne(int vzdialenost) {
         int delta;
@@ -96,7 +98,7 @@ public class Kruh {
         if (vzdialenost < 0) {
             delta = -1;
             vzdialenost = -vzdialenost;
-        } else {
+        } else  {
             delta = 1;
         }
 
@@ -107,7 +109,7 @@ public class Kruh {
     }
 
     /**
-     * (Kruh) Posuň sa pomaly zvisle o dĺžku danú parametrom. 
+     * (Štvorec) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
      */
     public void pomalyPosunZvisle(int vzdialenost) {
         int delta;
@@ -126,17 +128,17 @@ public class Kruh {
     }
 
     /**
-     * (Kruh) Zmeň priemer na hodnotu danú parametrom.
-     * Priemer musí byť nezáporné celé číslo. 
+     * (Štvorec) Zmeň dĺžku strany na hodnotu danú parametrom.
+     * Dĺžka strany musí byť nezáporné celé číslo. 
      */
-    public void zmenPriemer(int priemer) {
+    public void zmenStranu(int dlzka) {
         this.zmaz();
-        this.priemer = priemer;
+        this.strana = dlzka;
         this.nakresli();
     }
 
     /**
-     * (Kruh) Zmeň farbu na hodnotu danú parametrom.
+     * (Štvorec) Zmeň farbu na hodnotu danú parametrom.
      * Nazov farby musí byť po anglicky.
      * Možné farby sú tieto:
      * červená - "red"
@@ -152,19 +154,19 @@ public class Kruh {
     }
 
     /*
-     * Draw the circle with current specifications on screen.
+     * Draw the square with current specifications on screen.
      */
     private void nakresli() {
         if (this.jeViditelny) {
             Platno canvas = Platno.dajPlatno();
-            canvas.draw(this, this.farba, new Ellipse2D.Double(this.lavyHornyX, this.lavyHornyY, 
-                                                          this.priemer, this.priemer));
+            canvas.draw(this, this.farba,
+                        new Rectangle(this.lavyHornyX, this.lavyHornyY, this.strana, this.strana));
             canvas.wait(10);
         }
     }
 
     /*
-     * Erase the circle on screen.
+     * Erase the square on screen.
      */
     private void zmaz() {
         if (this.jeViditelny) {

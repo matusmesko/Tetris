@@ -1,3 +1,5 @@
+import tvary.Platno;
+
 import java.util.ArrayList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

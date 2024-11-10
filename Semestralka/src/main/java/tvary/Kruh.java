@@ -1,26 +1,26 @@
+package tvary;
+
 import java.awt.geom.Ellipse2D;
 
 /**
- * Elipsa, s ktorým možno pohybovať a nakreslí sa na plátno.
+ * tvary.Kruh, s ktorým možno pohybovať a nakreslí sa na plátno.
  * 
  * @author  Michael Kolling and David J. Barnes
  * @version 1.0  (15 July 2000)
  */
 
-public class Elipsa {
-    private int osX;
-    private int osY;
+public class Kruh {
+    private int priemer;
     private int lavyHornyX;
     private int lavyHornyY;
     private String farba;
     private boolean jeViditelny;
     
     /**
-     * Vytvor novú elipsu preddefinovanej farby na preddefinovanej pozícii. 
+     * Vytvor nový kruh preddefinovanej farby na preddefinovanej pozícii. 
      */
-    public Elipsa() {
-        this.osX = 60;
-        this.osY = 30;
+    public Kruh() {
+        this.priemer = 30;
         this.lavyHornyX = 20;
         this.lavyHornyY = 60;
         this.farba = "blue";
@@ -28,7 +28,7 @@ public class Elipsa {
     }
 
     /**
-     * (Elipsa) Zobraz sa.
+     * (tvary.Kruh) Zobraz sa.
      */
     public void zobraz() {
         this.jeViditelny = true;
@@ -36,7 +36,7 @@ public class Elipsa {
     }
     
     /**
-     * (Elipsa) Skry sa.
+     * (tvary.Kruh) Skry sa.
      */
     public void skry() {
         this.zmaz();
@@ -44,35 +44,35 @@ public class Elipsa {
     }
     
     /**
-     * (Elipsa) Posuň sa vpravo o pevnú dĺžku. 
+     * (tvary.Kruh) Posuň sa vpravo o pevnú dĺžku.
      */
     public void posunVpravo() {
         this.posunVodorovne(20);
     }
 
     /**
-     * (Elipsa) Posuň sa vľavo o pevnú dĺžku. 
+     * (tvary.Kruh) Posuň sa vľavo o pevnú dĺžku.
      */
     public void posunVlavo() {
         this.posunVodorovne(-20);
     }
 
     /**
-     * (Elipsa) Posuň sa hore o pevnú dĺžku. 
+     * (tvary.Kruh) Posuň sa hore o pevnú dĺžku.
      */
     public void posunHore() {
         this.posunZvisle(-20);
     }
 
     /**
-     * (Elipsa) Posuň sa dole o pevnú dĺžku. 
+     * (tvary.Kruh) Posuň sa dole o pevnú dĺžku.
      */
     public void posunDole() {
         this.posunZvisle(20);
     }
 
     /**
-     * (Kruh) Posuň sa vodorovne o dĺžku danú parametrom. 
+     * (tvary.Kruh) Posuň sa vodorovne o dĺžku danú parametrom.
      */
     public void posunVodorovne(int vzdialenost) {
         this.zmaz();
@@ -81,7 +81,7 @@ public class Elipsa {
     }
 
     /**
-     * (Elipsa) Posuň sa zvisle o dĺžku danú parametrom. 
+     * (tvary.Kruh) Posuň sa zvisle o dĺžku danú parametrom.
      */
     public void posunZvisle(int vzdialenost) {
         this.zmaz();
@@ -90,7 +90,7 @@ public class Elipsa {
     }
 
     /**
-     * (Elipsa) Posuň sa pomaly vodorovne o dĺžku danú parametrom. 
+     * (tvary.Kruh) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
      */
     public void pomalyPosunVodorovne(int vzdialenost) {
         int delta;
@@ -109,7 +109,7 @@ public class Elipsa {
     }
 
     /**
-     * (Elipsa) Posuň sa pomaly zvisle o dĺžku danú parametrom. 
+     * (tvary.Kruh) Posuň sa pomaly zvisle o dĺžku danú parametrom.
      */
     public void pomalyPosunZvisle(int vzdialenost) {
         int delta;
@@ -128,18 +128,17 @@ public class Elipsa {
     }
 
     /**
-     * (Elipsa) Zmeň veľkosti osí na hodnoty dané parametrami.
-     * Veľkosť musí byť nezáporné celé číslo. 
+     * (tvary.Kruh) Zmeň priemer na hodnotu danú parametrom.
+     * Priemer musí byť nezáporné celé číslo. 
      */
-    public void zmenOsi(int osX, int osY) {
+    public void zmenPriemer(int priemer) {
         this.zmaz();
-        this.osX = osX;
-        this.osY = osY;
+        this.priemer = priemer;
         this.nakresli();
     }
 
     /**
-     * (Elipsa) Zmeň farbu na hodnotu danú parametrom.
+     * (tvary.Kruh) Zmeň farbu na hodnotu danú parametrom.
      * Nazov farby musí byť po anglicky.
      * Možné farby sú tieto:
      * červená - "red"
@@ -148,8 +147,6 @@ public class Elipsa {
      * zelená  - "green"
      * fialová - "magenta"
      * čierna  - "black"
-     * biela   - "white"
-     * hnedá   - "brown"
      */
     public void zmenFarbu(String farba) {
         this.farba = farba;
@@ -163,7 +160,7 @@ public class Elipsa {
         if (this.jeViditelny) {
             Platno canvas = Platno.dajPlatno();
             canvas.draw(this, this.farba, new Ellipse2D.Double(this.lavyHornyX, this.lavyHornyY, 
-                                                          this.osX, this.osY));
+                                                          this.priemer, this.priemer));
             canvas.wait(10);
         }
     }

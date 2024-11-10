@@ -1,3 +1,5 @@
+package tvary;
+
 import java.awt.Rectangle;
 
 /**

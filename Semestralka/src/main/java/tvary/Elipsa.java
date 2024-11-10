@@ -1,32 +1,36 @@
-import java.awt.Rectangle;
+package tvary;
+
+import java.awt.geom.Ellipse2D;
 
 /**
- * Štvorec, s ktorým možno pohybovať a nakreslí sa na plátno.
+ * tvary.Elipsa, s ktorým možno pohybovať a nakreslí sa na plátno.
  * 
  * @author  Michael Kolling and David J. Barnes
  * @version 1.0  (15 July 2000)
  */
 
-public class Stvorec {
-    private int strana;
+public class Elipsa {
+    private int osX;
+    private int osY;
     private int lavyHornyX;
     private int lavyHornyY;
     private String farba;
     private boolean jeViditelny;
-
+    
     /**
-     * Vytvor nový štvorec preddefinovanej farby na preddefinovanej pozícii.
+     * Vytvor novú elipsu preddefinovanej farby na preddefinovanej pozícii. 
      */
-    public Stvorec() {
-        this.strana = 30;
-        this.lavyHornyX = 60;
-        this.lavyHornyY = 50;
-        this.farba = "red";
+    public Elipsa() {
+        this.osX = 60;
+        this.osY = 30;
+        this.lavyHornyX = 20;
+        this.lavyHornyY = 60;
+        this.farba = "blue";
         this.jeViditelny = false;
     }
 
     /**
-     * (Štvorec) Zobraz sa.
+     * (tvary.Elipsa) Zobraz sa.
      */
     public void zobraz() {
         this.jeViditelny = true;
@@ -34,7 +38,7 @@ public class Stvorec {
     }
     
     /**
-     * (Štvorec) Skry sa.
+     * (tvary.Elipsa) Skry sa.
      */
     public void skry() {
         this.zmaz();
@@ -42,35 +46,35 @@ public class Stvorec {
     }
     
     /**
-     * (Štvorec) Posuň sa vpravo o pevnú dĺžku.
+     * (tvary.Elipsa) Posuň sa vpravo o pevnú dĺžku.
      */
     public void posunVpravo() {
         this.posunVodorovne(20);
     }
 
     /**
-     * (Štvorec) Posuň sa vľavo o pevnú dĺžku.
+     * (tvary.Elipsa) Posuň sa vľavo o pevnú dĺžku.
      */
     public void posunVlavo() {
         this.posunVodorovne(-20);
     }
 
     /**
-     * (Štvorec) Posuň sa hore o pevnú dĺžku.
+     * (tvary.Elipsa) Posuň sa hore o pevnú dĺžku.
      */
     public void posunHore() {
         this.posunZvisle(-20);
     }
 
     /**
-     * (Štvorec) Posuň sa dole o pevnú dĺžku.
+     * (tvary.Elipsa) Posuň sa dole o pevnú dĺžku.
      */
     public void posunDole() {
         this.posunZvisle(20);
     }
 
     /**
-     * (Štvorec) Posuň sa vodorovne o dĺžku danú parametrom.
+     * (tvary.Kruh) Posuň sa vodorovne o dĺžku danú parametrom.
      */
     public void posunVodorovne(int vzdialenost) {
         this.zmaz();
@@ -79,7 +83,7 @@ public class Stvorec {
     }
 
     /**
-     * (Štvorec) Posuň sa zvisle o dĺžku danú parametrom.
+     * (tvary.Elipsa) Posuň sa zvisle o dĺžku danú parametrom.
      */
     public void posunZvisle(int vzdialenost) {
         this.zmaz();
@@ -88,7 +92,7 @@ public class Stvorec {
     }
 
     /**
-     * (Štvorec) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
+     * (tvary.Elipsa) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
      */
     public void pomalyPosunVodorovne(int vzdialenost) {
         int delta;
@@ -96,7 +100,7 @@ public class Stvorec {
         if (vzdialenost < 0) {
             delta = -1;
             vzdialenost = -vzdialenost;
-        } else  {
+        } else {
             delta = 1;
         }
 
@@ -107,7 +111,7 @@ public class Stvorec {
     }
 
     /**
-     * (Štvorec) Posuň sa pomaly vodorovne o dĺžku danú parametrom.
+     * (tvary.Elipsa) Posuň sa pomaly zvisle o dĺžku danú parametrom.
      */
     public void pomalyPosunZvisle(int vzdialenost) {
         int delta;
@@ -126,17 +130,18 @@ public class Stvorec {
     }
 
     /**
-     * (Štvorec) Zmeň dĺžku strany na hodnotu danú parametrom.
-     * Dĺžka strany musí byť nezáporné celé číslo. 
+     * (tvary.Elipsa) Zmeň veľkosti osí na hodnoty dané parametrami.
+     * Veľkosť musí byť nezáporné celé číslo. 
      */
-    public void zmenStranu(int dlzka) {
+    public void zmenOsi(int osX, int osY) {
         this.zmaz();
-        this.strana = dlzka;
+        this.osX = osX;
+        this.osY = osY;
         this.nakresli();
     }
 
     /**
-     * (Štvorec) Zmeň farbu na hodnotu danú parametrom.
+     * (tvary.Elipsa) Zmeň farbu na hodnotu danú parametrom.
      * Nazov farby musí byť po anglicky.
      * Možné farby sú tieto:
      * červená - "red"
@@ -145,6 +150,8 @@ public class Stvorec {
      * zelená  - "green"
      * fialová - "magenta"
      * čierna  - "black"
+     * biela   - "white"
+     * hnedá   - "brown"
      */
     public void zmenFarbu(String farba) {
         this.farba = farba;
@@ -152,19 +159,19 @@ public class Stvorec {
     }
 
     /*
-     * Draw the square with current specifications on screen.
+     * Draw the circle with current specifications on screen.
      */
     private void nakresli() {
         if (this.jeViditelny) {
             Platno canvas = Platno.dajPlatno();
-            canvas.draw(this, this.farba,
-                        new Rectangle(this.lavyHornyX, this.lavyHornyY, this.strana, this.strana));
+            canvas.draw(this, this.farba, new Ellipse2D.Double(this.lavyHornyX, this.lavyHornyY, 
+                                                          this.osX, this.osY));
             canvas.wait(10);
         }
     }
 
     /*
-     * Erase the square on screen.
+     * Erase the circle on screen.
      */
     private void zmaz() {
         if (this.jeViditelny) {
