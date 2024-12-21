@@ -390,12 +390,22 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             tetrominoQue.add(tetromino);
         }
 
-        curBlock.setRandomShape();
+        // 0 1
+
+        curBlock = this.tetrominoQue.get(0);
         curX = BoardWidth / 2 + 1;
         curY = BoardHeight - 1 + curBlock.minY();
 
-        nextBlock.setRandomShape();
+        this.tetrominoQue.remove(0);
+
+        // 1
+
+        nextBlock = this.tetrominoQue.get(this.tetrominoQue.size() - 1);
         nextTetrominoPanel.setNextTetromino(nextBlock);
+
+        this.tetrominoQue.set(0, nextBlock);
+
+        // 0
 
         if (!isMovable(curBlock, curX, curY)) {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
