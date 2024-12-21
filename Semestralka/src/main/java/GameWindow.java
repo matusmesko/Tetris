@@ -6,32 +6,34 @@ import java.awt.event.ActionListener;
 public class GameWindow implements Runnable{
 
     private final JFrame mainFrame;
-    private final GameBoardPanel gameBoard;
+    private GameBoardPanel gameBoard;
     private final JPanel mainMenu;
     private final JPanel settingsPanel;
     private MusicController mainMusic;
     private MusicController m1;
     private MusicController m2;
     private JToggleButton toggleButton;
+    private final NextTetrominoPanel nextTetrominoPanel;
 
     public GameWindow() {
         this.mainFrame = new JFrame();
         this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.mainFrame.setTitle("Tetris");
-        this.mainFrame.setSize(400, 814);
+        this.mainFrame.setSize(800, 814);
         this.mainFrame.setResizable(false);
-        this.mainMusic = new MusicController();
-        this.m1 = new MusicController();
-        this.m2 = new MusicController();
+        this.mainMusic = new MusicController(true);
+        this.m1 = new MusicController(true);
+        this.m2 = new MusicController(true);
 
         //this.mainFrame.setLayout(new GridLayout(1, 2));
         this.mainFrame.setLayout(new CardLayout());
         // you can adjust timer resolution here. but it's ideal value for this game.
-        this.gameBoard = new GameBoardPanel(500, mainMusic, m1, m2);
+
         this.settingsPanel = createSettingsPanel();
         this.mainMenu = createMainMenuPanel();
+        this.nextTetrominoPanel = new NextTetrominoPanel();
         this.mainFrame.add(mainMenu, "MainMenu");
-        this.mainFrame.add(gameBoard, "GameBoard");
+        this.mainFrame.add(createGameBoard(this.nextTetrominoPanel), "GameBoard");
         this.mainFrame.add(settingsPanel, "Settings");
         //this.mainFrame.add(this.menuPanel);
 
@@ -49,7 +51,7 @@ public class GameWindow implements Runnable{
         panel.setBackground(new Color(0x1A3F61));
 
         // Add image at the top
-        JLabel imageLabel = new JLabel(new ImageIcon("src/main/java/img/tetris.png"));
+        JLabel imageLabel = new JLabel(new ImageIcon("src/main/resources/tetris.png"));
         panel.add(imageLabel, BorderLayout.NORTH);
 
         // Create buttons
@@ -112,15 +114,11 @@ public class GameWindow implements Runnable{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (toggleButton.isSelected()) {
-                    toggleButton.setText("Music off");
+                    toggleButton.setText("Music Off");
                     mainMusic.setCanPlay(false);
-                    mainMusic.checkSettings();
-                    System.out.println(mainMusic.isCanPlay());
                 } else {
-                    toggleButton.setText("Music on");
-                    mainMusic.setCanPlay(false);
-                    mainMusic.checkSettings();
-                    System.out.println(mainMusic.isCanPlay());
+                    toggleButton.setText("Music On");
+                    mainMusic.setCanPlay(true);
                 }
             }
         });
@@ -130,6 +128,15 @@ public class GameWindow implements Runnable{
         buttonPanel.add(toggleButton);
         buttonPanel.add(backButton);
         panel.add(buttonPanel, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel createGameBoard(NextTetrominoPanel nextTetrominoPanel) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1,2));
+        this.gameBoard = new GameBoardPanel(500, mainMusic, m1, m2, nextTetrominoPanel);
+        panel.add(this.gameBoard);
+        panel.add(nextTetrominoPanel);
         return panel;
     }
 }

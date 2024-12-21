@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
     private final int BoardWidth = 10; // game board x size
@@ -23,6 +24,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     // current tetromino
     private Tetromino curBlock;
 
+    // next tetromino
+    private Tetromino nextBlock;
+    private ArrayList<Tetromino> tetrominoQue;
+
     // logical game block
     private Tetrominoes[] gameBoard;
     private Color[] colorTable;
@@ -37,10 +42,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private MusicController music1;
     private MusicController music2;
 
-    public GameBoardPanel(int timerResolution, MusicController main, MusicController m1, MusicController m2) {
+    private NextTetrominoPanel nextTetrominoPanel;
+
+    public GameBoardPanel(int timerResolution, MusicController main, MusicController m1, MusicController m2, NextTetrominoPanel nextTetrominoPanel) {
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
+        this.tetrominoQue = new ArrayList<>();
+        this.nextTetrominoPanel = nextTetrominoPanel;
         curBlock = new Tetromino();
+        nextBlock = new Tetromino();
         timer = new Timer(timerResolution, this);
         timer.start(); // activate timer
         currentTimerResolution = timerResolution;
@@ -191,7 +201,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         newTetromino();
         timer.start();
         try {
-            this.musicController.playMusicLoop("src/main/java/img/main.wav");
+            this.musicController.playMusicLoop("src/main/resources/main.wav");
             //this.musicController.setVolume(30.0f);
         }catch (Exception e) {
             e.printStackTrace();
@@ -323,7 +333,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     }
                 }
                 try {
-                    this.music2.playMusic("src/main/java/img/on.wav");
+                    this.music2.playMusic("src/main/resources//on.wav");
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -338,7 +348,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             repaint();
         }
         try {
-            this.music1.playMusic("src/main/java/img/off.wav");
+            this.music1.playMusic("src/main/resources/off.wav");
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -374,10 +384,18 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     private void newTetromino() {
 
+        for (int i = 0; i < 2; i++) {
+            Tetromino tetromino = new Tetromino();
+            tetromino.setRandomShape();
+            tetrominoQue.add(tetromino);
+        }
+
         curBlock.setRandomShape();
         curX = BoardWidth / 2 + 1;
         curY = BoardHeight - 1 + curBlock.minY();
 
+        nextBlock.setRandomShape();
+        nextTetrominoPanel.setNextTetromino(nextBlock);
 
         if (!isMovable(curBlock, curX, curY)) {
             curBlock.setShape(Tetrominoes.NO_BLOCK);
