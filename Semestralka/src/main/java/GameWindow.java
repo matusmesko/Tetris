@@ -18,9 +18,6 @@ public class GameWindow implements Runnable{
         // you can adjust timer resolution here. but it's ideal value for this game.
         this.gameBoard = new GameBoardPanel(this, 500);
         this.mainFrame.add(gameBoard);
-        this.menuPanel = new MenuPanel();
-        this.showBlockPanel = new ShowBlockPanel();
-        this.mainFrame.add(showBlockPanel);
         //this.mainFrame.add(this.menuPanel);
 
     }
