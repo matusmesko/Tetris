@@ -37,16 +37,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private MusicController music1;
     private MusicController music2;
 
-    public GameBoardPanel(GameWindow tetrisFrame, int timerResolution) {
+    public GameBoardPanel(int timerResolution, MusicController main, MusicController m1, MusicController m2) {
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
         curBlock = new Tetromino();
         timer = new Timer(timerResolution, this);
         timer.start(); // activate timer
         currentTimerResolution = timerResolution;
-        this.musicController = new MusicController();
-        this.music1 = new MusicController();
-        this.music2 = new MusicController();
+        this.musicController = main;
+        this.music1 = m1;
+        this.music2 = m2;
 
         gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
 
@@ -427,7 +427,4 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    public Tetromino getCurBlock() {
-        return this.curBlock;
-    }
 }
