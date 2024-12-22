@@ -4,9 +4,21 @@ import java.awt.*;
 public class NextTetrominoPanel extends JPanel {
 
     private Tetromino nextTetromino;
+    private Color[] colorTable;
+
 
     public NextTetrominoPanel() {
-        setBackground(new Color(22, 163, 163));
+        setBackground(new Color(17, 124, 104));
+        this.colorTable = new Color[]{
+                new Color(0, 0, 0),
+                new Color(164, 135, 255),
+                new Color(255, 128, 0),
+                new Color(255, 0, 0),
+                new Color(32, 128, 255),
+                new Color(255, 0, 255),
+                new Color(255, 255, 0),
+                new Color(0, 255, 0)
+        };
     }
 
     public void setNextTetromino(Tetromino tetromino) {
@@ -22,35 +34,33 @@ public class NextTetrominoPanel extends JPanel {
         }
     }
 
-//    private void drawTetromino(Graphics g, Tetromino tetromino) {
-//        Color curColor = Color.WHITE; // Default color, you can customize this based on the Tetromino type
-//        g.setColor(curColor);
-//        int blockWidth = getWidth() / 4; // Assuming Tetromino has 4 blocks
-//        int blockHeight = getHeight() / 4; // Adjust as necessary
-//
-//        for (int i = 0; i < 4; i++) {
-//            int x = tetromino.getX(i);
-//            int y = tetromino.getY(i);
-//            g.fillRect(x * blockWidth + 10, (1 - y) * blockHeight + 10, blockWidth - 2, blockHeight - 2);
-//        }
-//    }
+    private int blockWidth() {
+        return (int) getSize().getWidth() / 10;
+    }
+
+    private int blockHeight() {
+        return (int) getSize().getHeight() / 22;
+    }
+
 
     private void drawTetromino(Graphics g, Tetromino tetromino) {
-        Color curColor = Color.WHITE; // Default color, you can customize this based on the Tetromino type
+        Color curColor = colorTable[tetromino.getShape().ordinal()]; // Default color, you can customize this based on the Tetromino type
         g.setColor(curColor);
 
-        // Define smaller block size
-        int blockWidth = getWidth() / 8; // Smaller blocks (8 blocks across)
-        int blockHeight = getHeight() / 8; // Smaller blocks (8 blocks tall)
 
         // Calculate the starting position to center the Tetromino
-        int startX = (getWidth() - (blockWidth * 4)) / 2; // Center horizontally
-        int startY = (getHeight() - (blockHeight * 4)) / 2; // Center vertically
+        int startX = (getWidth() - (this.blockWidth() * 4)) / 2 + 70; // Center horizontally
+        int startY = (getHeight() - (this.blockHeight() * 4)) / 2; // Center vertically
 
         for (int i = 0; i < 4; i++) {
             int x = tetromino.getX(i);
             int y = tetromino.getY(i);
-            g.fillRect(startX + (x * blockWidth), startY + (y * blockHeight), blockWidth - 2, blockHeight - 2);
+            g.fillRect(startX + (x * this.blockWidth()), startY + (y * this.blockHeight()), this.blockWidth() - 2, this.blockHeight() - 2);
         }
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Calibri", Font.BOLD, 25));
+        g.drawString("Next Block", startX + this.blockWidth() - 75, startY + this.blockHeight() + 90);
+
     }
 }

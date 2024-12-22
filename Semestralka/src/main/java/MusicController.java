@@ -2,6 +2,7 @@
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MusicController {
 
@@ -15,7 +16,11 @@ public class MusicController {
 
     public void playMusicLoop(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filepath));
+        InputStream audioStream = getClass().getResourceAsStream(filepath);
+        if (audioStream == null) {
+            throw new IOException("Audio file not found: " + filepath);
+        }
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioStream);
         this.clip = AudioSystem.getClip();
         this.clip.open(audioInputStream);
         this.clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -24,7 +29,11 @@ public class MusicController {
 
     public void playMusic(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filepath));
+        InputStream audioStream = getClass().getResourceAsStream(filepath);
+        if (audioStream == null) {
+            throw new IOException("Audio file not found: " + filepath);
+        }
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioStream);
         this.clip = AudioSystem.getClip();
         this.clip.open(audioInputStream);
         clip.start();

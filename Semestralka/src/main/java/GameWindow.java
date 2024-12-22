@@ -14,6 +14,7 @@ public class GameWindow implements Runnable{
     private MusicController m2;
     private JToggleButton toggleButton;
     private final NextTetrominoPanel nextTetrominoPanel;
+//    private final JPanel gameOverPanel;
 
     public GameWindow() {
         this.mainFrame = new JFrame();
@@ -31,11 +32,12 @@ public class GameWindow implements Runnable{
 
         this.settingsPanel = createSettingsPanel();
         this.mainMenu = createMainMenuPanel();
+//        this.gameOverPanel = createGameOverPanel();
         this.nextTetrominoPanel = new NextTetrominoPanel();
         this.mainFrame.add(mainMenu, "MainMenu");
         this.mainFrame.add(createGameBoard(this.nextTetrominoPanel), "GameBoard");
         this.mainFrame.add(settingsPanel, "Settings");
-        //this.mainFrame.add(this.menuPanel);
+//        this.mainFrame.add(gameOverPanel, "GameOver");
 
     }
 
@@ -51,7 +53,8 @@ public class GameWindow implements Runnable{
         panel.setBackground(new Color(0x1A3F61));
 
         // Add image at the top
-        JLabel imageLabel = new JLabel(new ImageIcon("src/main/resources/tetris.png"));
+        //JLabel imageLabel = new JLabel(new ImageIcon("src/main/resources/tetris.png"));
+        JLabel imageLabel = new JLabel(new ImageIcon(getClass().getResource("/tetris.png")));
         panel.add(imageLabel, BorderLayout.NORTH);
 
         // Create buttons
@@ -134,9 +137,50 @@ public class GameWindow implements Runnable{
     private JPanel createGameBoard(NextTetrominoPanel nextTetrominoPanel) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(1,2));
-        this.gameBoard = new GameBoardPanel(500, mainMusic, m1, m2, nextTetrominoPanel);
+        this.gameBoard = new GameBoardPanel(500, mainMusic, m1, m2, nextTetrominoPanel, this.mainFrame);
         panel.add(this.gameBoard);
         panel.add(nextTetrominoPanel);
+        return panel;
+    }
+
+    private JPanel createGameOverPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(new Color(0x1A3F61));
+
+        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        gameOverLabel.setForeground(Color.WHITE);
+        panel.add(gameOverLabel, BorderLayout.NORTH);
+
+        JButton restartButton = new JButton("Restart");
+        JButton mainMenuButton = new JButton("Main Menu");
+
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
+                gameBoard.start(); // Restart the game
+                cl.show(mainFrame.getContentPane(), "GameBoard");
+                gameBoard.requestFocusInWindow();
+            }
+        });
+
+        mainMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
+                cl.show(mainFrame.getContentPane(), "MainMenu");
+                settingsPanel.requestFocusInWindow();
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(2, 1));
+        buttonPanel.add(restartButton);
+        buttonPanel.add(mainMenuButton);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
         return panel;
     }
 }

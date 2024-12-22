@@ -43,10 +43,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private MusicController music2;
 
     private NextTetrominoPanel nextTetrominoPanel;
+    private JFrame mainFrame;
 
-    public GameBoardPanel(int timerResolution, MusicController main, MusicController m1, MusicController m2, NextTetrominoPanel nextTetrominoPanel) {
+    public GameBoardPanel(int timerResolution, MusicController main, MusicController m1, MusicController m2, NextTetrominoPanel nextTetrominoPanel, JFrame mainFrame) {
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
+        this.mainFrame = mainFrame;
         this.tetrominoQue = new ArrayList<>();
         this.nextTetrominoPanel = nextTetrominoPanel;
         curBlock = new Tetromino();
@@ -84,7 +86,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
                 int keycode = e.getKeyCode();
 
-                if (keycode == 'p' || keycode == 'P') {
+                if (keycode == 'p' || keycode == 'P' || keycode == KeyEvent.VK_ESCAPE) {
                     pause();
                     return;
                 }
@@ -118,6 +120,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                         advanceToEnd();
                         break;
                     case 'p':
+                    case KeyEvent.VK_ESCAPE:
                     case 'P':
                         pause();
                         break;
@@ -201,7 +204,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         newTetromino();
         timer.start();
         try {
-            this.musicController.playMusicLoop("src/main/resources/main.wav");
+            this.musicController.playMusicLoop("/main.wav");
             //this.musicController.setVolume(30.0f);
         }catch (Exception e) {
             e.printStackTrace();
@@ -333,7 +336,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     }
                 }
                 try {
-                    this.music2.playMusic("src/main/resources//on.wav");
+                    this.music2.playMusic("/on.wav");
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -348,7 +351,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
             repaint();
         }
         try {
-            this.music1.playMusic("src/main/resources/off.wav");
+            this.music1.playMusic("/off.wav");
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -383,7 +386,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private void newTetromino() {
-
         for (int i = 0; i < 2; i++) {
             Tetromino tetromino = new Tetromino();
             tetromino.setRandomShape();
@@ -391,20 +393,15 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
 
         // 0 1
-
         curBlock = this.tetrominoQue.get(0);
         curX = BoardWidth / 2 + 1;
         curY = BoardHeight - 1 + curBlock.minY();
-
         this.tetrominoQue.remove(0);
-
         // 1
 
         nextBlock = this.tetrominoQue.get(this.tetrominoQue.size() - 1);
         nextTetrominoPanel.setNextTetromino(nextBlock);
-
         this.tetrominoQue.set(0, nextBlock);
-
         // 0
 
         if (!isMovable(curBlock, curX, curY)) {
@@ -446,13 +443,76 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
         tetrominoFixed();
     }
+    
 
     private void gameOver() {
         this.musicController.stopMusic();
-        int r = JOptionPane.showConfirmDialog(this, this.currentStatus + "\n" + this.currentLevel + "\n Restart", "GameOver", JOptionPane.YES_NO_OPTION);
-        if (r == JOptionPane.YES_OPTION) {
-            start();
-        }
+        JPanel panel = createGameOverPanel();
+        this.mainFrame.add(panel, "GameOver");
+        CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
+        cl.show(mainFrame.getContentPane(), "GameOver");
+    }
+
+    private JPanel createGameOverPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout());
+        panel.setBackground(new Color(0x1A3F61));
+
+        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        gameOverLabel.setForeground(Color.WHITE);
+
+        JLabel scoreLabel = new JLabel("Score: " + currentScore);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        scoreLabel.setForeground(Color.WHITE);
+        JLabel levelLabel = new JLabel(currentLevel);
+        levelLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        levelLabel.setForeground(Color.WHITE);
+        levelLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel statPanel = new JPanel();
+        statPanel.setLayout(new GridLayout(2,1));
+        statPanel.add(levelLabel);
+        statPanel.add(scoreLabel);
+        statPanel.setBackground(new Color(0x1A3F61));
+        panel.add(gameOverLabel, BorderLayout.NORTH);
+        panel.add(statPanel);
+
+
+        JButton restartButton = new JButton("Restart");
+        JButton mainMenuButton = new JButton("Main Menu");
+
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
+                start(); // Restart the game
+                cl.show(mainFrame.getContentPane(), "GameBoard");
+                requestFocusInWindow();
+            }
+        });
+
+        mainMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
+                cl.show(mainFrame.getContentPane(), "MainMenu");
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(2, 1));
+        buttonPanel.add(restartButton);
+        buttonPanel.add(mainMenuButton);
+        panel.add(buttonPanel, BorderLayout.CENTER);
+
+        JPanel allPanel = new JPanel();
+        allPanel.setLayout(new GridLayout(3, 1));
+        allPanel.add(panel);
+        allPanel.add(statPanel);
+        allPanel.add(buttonPanel);
+        return allPanel;
     }
 
 }

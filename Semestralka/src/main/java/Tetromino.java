@@ -75,22 +75,6 @@ public class Tetromino {
         return ret;
     }
 
-    // rotate a tetromino
-    public Tetromino rotateLeft() {
-        if (tetrominoes == Tetrominoes.O_SHAPE) {
-            return this;
-        }
-
-        Tetromino ret = new Tetromino();
-        ret.tetrominoes = tetrominoes;
-
-        for (int i = 0; i < coords.length; i++) {
-            ret.setX(i, getY(i));
-            ret.setY(i, -getX(i));
-        }
-
-        return ret;
-    }
 
     public Tetromino rotateRight() {
         if (tetrominoes == Tetrominoes.O_SHAPE) {
