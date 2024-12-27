@@ -9,16 +9,7 @@ public class NextTetrominoPanel extends JPanel {
 
     public NextTetrominoPanel() {
         setBackground(new Color(17, 124, 104));
-        this.colorTable = new Color[]{
-                new Color(0, 0, 0),
-                new Color(164, 135, 255),
-                new Color(255, 128, 0),
-                new Color(255, 0, 0),
-                new Color(32, 128, 255),
-                new Color(255, 0, 255),
-                new Color(255, 255, 0),
-                new Color(0, 255, 0)
-        };
+        this.colorTable = Utils.getColorTable();
     }
 
     public void setNextTetromino(Tetromino tetromino) {

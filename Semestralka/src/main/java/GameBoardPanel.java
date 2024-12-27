@@ -61,18 +61,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         this.music2 = m2;
 
         gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
-
-        // colour of tetrominoes
-        colorTable = new Color[]{
-                new Color(0, 0, 0),
-                new Color(164, 135, 255),
-                new Color(255, 128, 0),
-                new Color(255, 0, 0),
-                new Color(32, 128, 255),
-                new Color(255, 0, 255),
-                new Color(255, 255, 0),
-                new Color(0, 255, 0)
-        };
+        colorTable = Utils.getColorTable();
 
 
 
@@ -134,7 +123,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     // adjusting game level
     private void setResolution() {
-        // fix me later! it's lame :P"
 
         switch (currentScore / 10) {
             case 10:
@@ -205,7 +193,6 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         timer.start();
         try {
             this.musicController.playMusicLoop("/main.wav");
-            //this.musicController.setVolume(30.0f);
         }catch (Exception e) {
             e.printStackTrace();
         }
