@@ -1,5 +1,6 @@
 
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,24 +15,38 @@ public class MusicController {
         this.canPlay = canPlay;
     }
 
+
     public void playMusicLoop(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
-        InputStream audioStream = getClass().getResourceAsStream(filepath);
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioStream);
-        this.clip = AudioSystem.getClip();
-        this.clip.open(audioInputStream);
-        this.clip.loop(Clip.LOOP_CONTINUOUSLY);
-        this.clip.start();
+
+        // Use BufferedInputStream to support mark/reset
+        try (InputStream audioStream = getClass().getResourceAsStream(filepath);
+             BufferedInputStream bufferedIn = new BufferedInputStream(audioStream)) {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bufferedIn);
+            this.clip = AudioSystem.getClip();
+            this.clip.open(audioInputStream);
+            this.clip.loop(Clip.LOOP_CONTINUOUSLY);
+            this.clip.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e; // Rethrow the exception if needed
+        }
     }
 
     public void playMusic(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
-        InputStream audioStream = getClass().getResourceAsStream(filepath);
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioStream);
-        this.clip = AudioSystem.getClip();
-        this.clip.open(audioInputStream);
-        this.clip.start();
 
+        // Use BufferedInputStream to support mark/reset
+        try (InputStream audioStream = getClass().getResourceAsStream(filepath);
+             BufferedInputStream bufferedIn = new BufferedInputStream(audioStream)) {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bufferedIn);
+            this.clip = AudioSystem.getClip();
+            this.clip.open(audioInputStream);
+            this.clip.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e; // Rethrow the exception if needed
+        }
     }
 
     public void stopMusic() {
