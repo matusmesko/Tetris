@@ -60,8 +60,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         this.music1 = m1;
         this.music2 = m2;
 
-        gameField = new Tetrominoes[BOARDWIDTH * BOARDHEIGHT];
-        colorTable = Utils.getColorTable();
+        this.gameField = new Tetrominoes[BOARDWIDTH * BOARDHEIGHT];
+        this.colorTable = Utils.getColorTable();
 
 
 
@@ -88,8 +88,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     case KeyEvent.VK_LEFT:
                         isMovable(currentTetromino, blockX - 1, blockY);
                         break;
-                    case 's':
-                    case 'S':
+                    case 'd':
+                    case 'D':
                     case KeyEvent.VK_RIGHT:
                         isMovable(currentTetromino, blockX + 1, blockY);
                         break;
@@ -98,8 +98,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     case KeyEvent.VK_UP:
                         isMovable(currentTetromino.rotateRight(), blockX, blockY);
                         break;
-                    case 'r':
-                    case 'R':
+                    case 's':
+                    case 'S':
                     case KeyEvent.VK_DOWN:
                         moveBlockDown();
                         break;
@@ -110,6 +110,10 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     case KeyEvent.VK_ESCAPE:
                     case 'P':
                         pause();
+                        break;
+                    case 'r':
+                    case 'R':
+                        gameOver();
                         break;
                 }
 
@@ -212,6 +216,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+
     // calculates actual size of tetromino on screen
     private int blockWidth() {
         return (int) getSize().getWidth() / BOARDWIDTH;
@@ -240,7 +245,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 28));
+        g.setFont(new Font("Calibri", Font.BOLD, 28));
         g.drawString(currentStatus, 15, 35);
         g.drawString(currentLevel, 15, 70);
 

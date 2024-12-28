@@ -52,6 +52,17 @@ public class NextTetrominoPanel extends JPanel {
         g.setColor(Color.WHITE);
         g.setFont(new Font("Calibri", Font.BOLD, 25));
         g.drawString("Next Block", startX + this.blockWidth() - 75, startY + this.blockHeight() + 90);
+        drawControls(g, 10, 550);
+    }
+
+    private void drawControls(Graphics g, int x, int y) {
+        g.drawString("W/\u2191 - Rotate Tetromino", x, y);
+        g.drawString("A/\u2190 - Move Left", x, y + 30);
+        g.drawString("D/\u2192 - Move Right", x, y + 60);
+        g.drawString("S/\u2193 - Move Down", x, y + 90);
+        g.drawString("Space - Move to bottom", x, y + 120);
+        g.drawString("ESC/P - Pause", x, y + 150);
+        g.drawString("R - Restart", x, y + 180);
 
     }
 }

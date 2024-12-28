@@ -143,44 +143,4 @@ public class GameWindow implements Runnable{
         return panel;
     }
 
-    private JPanel createGameOverPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(new Color(0x1A3F61));
-
-        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
-        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 50));
-        gameOverLabel.setForeground(Color.WHITE);
-        panel.add(gameOverLabel, BorderLayout.NORTH);
-
-        JButton restartButton = new JButton("Restart");
-        JButton mainMenuButton = new JButton("Main Menu");
-
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
-                gameBoard.start(); // Restart the game
-                cl.show(mainFrame.getContentPane(), "GameBoard");
-                gameBoard.requestFocusInWindow();
-            }
-        });
-
-        mainMenuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
-                cl.show(mainFrame.getContentPane(), "MainMenu");
-                settingsPanel.requestFocusInWindow();
-            }
-        });
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1));
-        buttonPanel.add(restartButton);
-        buttonPanel.add(mainMenuButton);
-
-        panel.add(buttonPanel, BorderLayout.CENTER);
-        return panel;
-    }
 }
