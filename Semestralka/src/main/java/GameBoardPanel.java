@@ -7,29 +7,29 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GameBoardPanel extends JPanel implements ActionListener {
-    private final int BoardWidth = 10; // game board x size
-    private final int BoardHeight = 22; // game board y size
+    private final int BOARDWIDTH = 10; // game board x size
+    private final int BOARDHEIGHT = 22; // game board y size
 
     // game status & timer
     private Timer timer;
-    private boolean isFallingDone = false;
-    private boolean isStarted = false;
-    private boolean isPaused = false;
+    private boolean isBlockFalling = false;
+    private boolean gameStarted = false;
+    private boolean gamePaused = false;
     private int currentScore = 0; // removed lines == score
 
     // position of current block
-    private int curX = 0;
-    private int curY = 0;
+    private int blockX = 0;
+    private int blockY = 0;
 
     // current tetromino
-    private Tetromino curBlock;
+    private Tetromino currentTetromino;
 
     // next tetromino
-    private Tetromino nextBlock;
-    private ArrayList<Tetromino> tetrominoQue;
+    private Tetromino nextTetromino;
+    private ArrayList<Tetromino> tetrominoQueue;
 
     // logical game block
-    private Tetrominoes[] gameBoard;
+    private Tetrominoes[] gameField;
     private Color[] colorTable;
 
     // adjusting game status
@@ -38,7 +38,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     private int currentTimerResolution;
 
 
-    private MusicController musicController;
+    private MusicController backgroundMusic;
     private MusicController music1;
     private MusicController music2;
 
@@ -49,18 +49,18 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         setFocusable(true);
         setBackground(new Color(0, 30, 30));
         this.mainFrame = mainFrame;
-        this.tetrominoQue = new ArrayList<>();
+        this.tetrominoQueue = new ArrayList<>();
         this.nextTetrominoPanel = nextTetrominoPanel;
-        curBlock = new Tetromino();
-        nextBlock = new Tetromino();
+        currentTetromino = new Tetromino();
+        nextTetromino = new Tetromino();
         timer = new Timer(timerResolution, this);
         timer.start(); // activate timer
         currentTimerResolution = timerResolution;
-        this.musicController = main;
+        this.backgroundMusic = main;
         this.music1 = m1;
         this.music2 = m2;
 
-        gameBoard = new Tetrominoes[BoardWidth * BoardHeight];
+        gameField = new Tetrominoes[BOARDWIDTH * BOARDHEIGHT];
         colorTable = Utils.getColorTable();
 
 
@@ -69,9 +69,8 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (!isStarted || curBlock.getShape() == Tetrominoes.NO_BLOCK) {
-                    return;
-                }
+                if (!gameStarted || currentTetromino.getShape() == Tetrominoes.NO_BLOCK) return;
+
 
                 int keycode = e.getKeyCode();
 
@@ -80,33 +79,32 @@ public class GameBoardPanel extends JPanel implements ActionListener {
                     return;
                 }
 
-                if (isPaused) {
-                    return;
-                }
+                if (gamePaused) return;
+
 
                 switch (keycode) {
                     case 'a':
                     case 'A':
                     case KeyEvent.VK_LEFT:
-                        isMovable(curBlock, curX - 1, curY);
+                        isMovable(currentTetromino, blockX - 1, blockY);
                         break;
                     case 's':
                     case 'S':
                     case KeyEvent.VK_RIGHT:
-                        isMovable(curBlock, curX + 1, curY);
+                        isMovable(currentTetromino, blockX + 1, blockY);
                         break;
                     case 'w':
                     case 'W':
                     case KeyEvent.VK_UP:
-                        isMovable(curBlock.rotateRight(), curX, curY);
+                        isMovable(currentTetromino.rotateRight(), blockX, blockY);
                         break;
                     case 'r':
                     case 'R':
                     case KeyEvent.VK_DOWN:
-                        advanceOneLine();
+                        moveBlockDown();
                         break;
                     case KeyEvent.VK_SPACE:
-                        advanceToEnd();
+                        dropBlockDown();
                         break;
                     case 'p':
                     case KeyEvent.VK_ESCAPE:
@@ -122,7 +120,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     // adjusting game level
-    private void setResolution() {
+    private void setTimer() {
 
         switch (currentScore / 10) {
             case 10:
@@ -163,53 +161,52 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     // initialize game board
     private void initBoard() {
-        for (int i = 0; i < BoardWidth * BoardHeight; i++) {
-            gameBoard[i] = Tetrominoes.NO_BLOCK;
+        for (int i = 0; i < BOARDWIDTH * BOARDHEIGHT; i++) {
+            gameField[i] = Tetrominoes.NO_BLOCK;
         }
     }
 
     // timer callback
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (isFallingDone) {
-            isFallingDone = !isFallingDone; // toggle status
+        if (isBlockFalling) {
+            isBlockFalling = !isBlockFalling; // toggle status
             newTetromino();
         } else {
-            advanceOneLine();
+            moveBlockDown();
         }
     }
 
     public void start() {
-        if (isPaused) {
-            return;
-        }
+        if (gamePaused) return;
 
-        isStarted = true;
-        isFallingDone = false;
+
+        gameStarted = true;
+        isBlockFalling = false;
         currentScore = 0;
         initBoard();
 
         newTetromino();
         timer.start();
         try {
-            this.musicController.playMusicLoop("/main.wav");
+            this.backgroundMusic.playMusicLoop("/main.wav");
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void pause() {
-        if (!isStarted) {
+        if (!gameStarted) {
             return;
         }
 
-        isPaused = !isPaused;
-        if (isPaused) {
+        gamePaused = !gamePaused;
+        if (gamePaused) {
             timer.stop();
-            this.musicController.pauseMusic();
+            this.backgroundMusic.pauseMusic();
         } else {
             timer.start();
-            this.musicController.resumeMusic();
+            this.backgroundMusic.resumeMusic();
         }
 
         repaint();
@@ -217,16 +214,16 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     // calculates actual size of tetromino on screen
     private int blockWidth() {
-        return (int) getSize().getWidth() / BoardWidth;
+        return (int) getSize().getWidth() / BOARDWIDTH;
     }
 
     private int blockHeight() {
-        return (int) getSize().getHeight() / BoardHeight;
+        return (int) getSize().getHeight() / BOARDHEIGHT;
     }
 
     // current tetromino position in array (atom)
     Tetrominoes curTetrominoPos(int x, int y) {
-        return gameBoard[(y * BoardWidth) + x];
+        return gameField[(y * BOARDWIDTH) + x];
     }
 
     @Override
@@ -234,7 +231,7 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
         super.paint(g);
 
-        if (!isPaused) {
+        if (!gamePaused) {
             currentStatus =  "Score: " + currentScore;
             currentLevel = "Level: " + (currentScore / 10 + 1);
         } else {
@@ -248,28 +245,28 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         g.drawString(currentLevel, 15, 70);
 
         Dimension size = getSize();
-        int boardTop = (int) size.getHeight() - BoardHeight * blockHeight();
+        int boardTop = (int) size.getHeight() - BOARDHEIGHT * blockHeight();
 
         // rendering - shadow of tetromino
-        int tempY = curY;
+        int tempY = blockY;
         while (tempY > 0) {
-            if (!atomIsMovable(curBlock, curX, tempY - 1, false)) {
+            if (!isPositionValid(currentTetromino, blockX, tempY - 1, false)) {
                 break;
             }
             tempY--;
         }
         for (int i = 0; i < 4; i++) {
-            int x = curX + curBlock.getX(i);
-            int y = tempY - curBlock.getY(i);
-            drawTetromino(g, x * blockWidth(), boardTop + (BoardHeight - y - 1) * blockHeight(),
-                    curBlock.getShape(),
+            int x = blockX + currentTetromino.getX(i);
+            int y = tempY - currentTetromino.getY(i);
+            drawTetromino(g, x * blockWidth(), boardTop + (BOARDHEIGHT - y - 1) * blockHeight(),
+                    currentTetromino.getShape(),
                     true);
         }
 
         // rendering - game board
-        for (int i = 0; i < BoardHeight; i++) {
-            for (int j = 0; j < BoardWidth; j++) {
-                Tetrominoes shape = curTetrominoPos(j, BoardHeight - i - 1);
+        for (int i = 0; i < BOARDHEIGHT; i++) {
+            for (int j = 0; j < BOARDWIDTH; j++) {
+                Tetrominoes shape = curTetrominoPos(j, BOARDHEIGHT - i - 1);
                 if (shape != Tetrominoes.NO_BLOCK) {
                     drawTetromino(g, j * blockWidth(), boardTop + i * blockHeight(), shape, false);
                 }
@@ -277,12 +274,12 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
 
         // rendering - current tetromino
-        if (curBlock.getShape() != Tetrominoes.NO_BLOCK) {
+        if (currentTetromino.getShape() != Tetrominoes.NO_BLOCK) {
             for (int i = 0; i < 4; i++) {
-                int x = curX + curBlock.getX(i);
-                int y = curY - curBlock.getY(i);
-                drawTetromino(g, x * blockWidth(), boardTop + (BoardHeight - y - 1) * blockHeight(),
-                        curBlock.getShape(), false);
+                int x = blockX + currentTetromino.getX(i);
+                int y = blockY - currentTetromino.getY(i);
+                drawTetromino(g, x * blockWidth(), boardTop + (BOARDHEIGHT - y - 1) * blockHeight(),
+                        currentTetromino.getShape(), false);
 
 
             }
@@ -302,13 +299,13 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void removeFullLines() {
+    private void clearFullLine() {
         int fullLines = 0;
 
-        for (int i = BoardHeight - 1; i >= 0; i--) {
+        for (int i = BOARDHEIGHT - 1; i >= 0; i--) {
             boolean isFull = true;
 
-            for (int j = 0; j < BoardWidth; j++) {
+            for (int j = 0; j < BOARDWIDTH; j++) {
                 if (curTetrominoPos(j, i) == Tetrominoes.NO_BLOCK) {
                     isFull = false;
                     break;
@@ -317,9 +314,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
             if (isFull) {
                 ++fullLines;
-                for (int k = i; k < BoardHeight - 1; k++) {
-                    for (int l = 0; l < BoardWidth; ++l) {
-                        gameBoard[(k * BoardWidth) + l] = curTetrominoPos(l, k + 1);
+                for (int k = i; k < BOARDHEIGHT - 1; k++) {
+                    for (int l = 0; l < BOARDWIDTH; ++l) {
+                        gameField[(k * BOARDWIDTH) + l] = curTetrominoPos(l, k + 1);
                     }
                 }
                 try {
@@ -332,9 +329,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
         if (fullLines > 0) {
             currentScore += fullLines;
-            isFallingDone = true;
-            curBlock.setShape(Tetrominoes.NO_BLOCK);
-            setResolution();
+            isBlockFalling = true;
+            currentTetromino.setShape(Tetrominoes.NO_BLOCK);
+            setTimer();
             repaint();
         }
         try {
@@ -346,11 +343,11 @@ public class GameBoardPanel extends JPanel implements ActionListener {
 
     // true - actual tetromino pos
     // flase - shadow pos
-    private boolean atomIsMovable(Tetromino chkBlock, int chkX, int chkY, boolean flag) {
+    private boolean isPositionValid(Tetromino chkBlock, int chkX, int chkY, boolean flag) {
         for (int i = 0; i < 4; i++) {
             int x = chkX + chkBlock.getX(i);
             int y = chkY - chkBlock.getY(i);
-            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight) {
+            if (x < 0 || x >= BOARDWIDTH || y < 0 || y >= BOARDHEIGHT) {
                 return false;
             }
             if (curTetrominoPos(x, y) != Tetrominoes.NO_BLOCK) {
@@ -359,9 +356,9 @@ public class GameBoardPanel extends JPanel implements ActionListener {
         }
 
         if (flag) {
-            curBlock = chkBlock;
-            curX = chkX;
-            curY = chkY;
+            currentTetromino = chkBlock;
+            blockX = chkX;
+            blockY = chkY;
             repaint();
         }
 
@@ -369,71 +366,71 @@ public class GameBoardPanel extends JPanel implements ActionListener {
     }
 
     private boolean isMovable(Tetromino chkBlock, int chkX, int chkY) {
-        return atomIsMovable(chkBlock, chkX, chkY, true);
+        return isPositionValid(chkBlock, chkX, chkY, true);
     }
 
     private void newTetromino() {
         for (int i = 0; i < 2; i++) {
             Tetromino tetromino = new Tetromino();
             tetromino.setRandomShape();
-            tetrominoQue.add(tetromino);
+            tetrominoQueue.add(tetromino);
         }
 
         // 0 1
-        curBlock = this.tetrominoQue.get(0);
-        curX = BoardWidth / 2 + 1;
-        curY = BoardHeight - 1 + curBlock.minY();
-        this.tetrominoQue.remove(0);
+        currentTetromino = this.tetrominoQueue.get(0);
+        blockX = BOARDWIDTH / 2 + 1;
+        blockY = BOARDHEIGHT - 1 + currentTetromino.minY();
+        this.tetrominoQueue.remove(0);
         // 1
 
-        nextBlock = this.tetrominoQue.get(this.tetrominoQue.size() - 1);
-        nextTetrominoPanel.setNextTetromino(nextBlock);
-        this.tetrominoQue.set(0, nextBlock);
+        nextTetromino = this.tetrominoQueue.get(this.tetrominoQueue.size() - 1);
+        nextTetrominoPanel.setNextTetromino(nextTetromino);
+        this.tetrominoQueue.set(0, nextTetromino);
         // 0
 
-        if (!isMovable(curBlock, curX, curY)) {
-            curBlock.setShape(Tetrominoes.NO_BLOCK);
+        if (!isMovable(currentTetromino, blockX, blockY)) {
+            currentTetromino.setShape(Tetrominoes.NO_BLOCK);
             timer.stop();
-            isStarted = false;
+            gameStarted = false;
             gameOver();
         }
     }
 
-    private void tetrominoFixed() {
+    private void fixTetromino() {
         for (int i = 0; i < 4; i++) {
-            int x = curX + curBlock.getX(i);
-            int y = curY - curBlock.getY(i);
-            gameBoard[(y * BoardWidth) + x] = curBlock.getShape();
+            int x = blockX + currentTetromino.getX(i);
+            int y = blockY - currentTetromino.getY(i);
+            gameField[(y * BOARDWIDTH) + x] = currentTetromino.getShape();
         }
 
-        removeFullLines();
+        clearFullLine();
 
-        if (!isFallingDone) {
+        if (!isBlockFalling) {
             newTetromino();
         }
 
     }
 
-    private void advanceOneLine() {
-        if (!isMovable(curBlock, curX, curY - 1)) {
-            tetrominoFixed();
+    private void moveBlockDown() {
+        if (!isMovable(currentTetromino, blockX, blockY - 1)) {
+            fixTetromino();
         }
     }
 
-    private void advanceToEnd() {
-        int tempY = curY;
+    private void dropBlockDown() {
+        int tempY = blockY;
         while (tempY > 0) {
-            if (!isMovable(curBlock, curX, tempY - 1)) {
+            if (!isMovable(currentTetromino, blockX, tempY - 1)) {
                 break;
             }
             --tempY;
         }
-        tetrominoFixed();
+        fixTetromino();
     }
     
 
     private void gameOver() {
-        this.musicController.stopMusic();
+        this.backgroundMusic.stopMusic();
         JPanel panel = createGameOverPanel();
         this.mainFrame.add(panel, "GameOver");
         CardLayout cl = (CardLayout) mainFrame.getContentPane().getLayout();
