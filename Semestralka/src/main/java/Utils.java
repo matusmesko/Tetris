@@ -1,7 +1,16 @@
 import java.awt.*;
 
+/**
+ * Utils class
+ *
+ * @author Matúš Meško
+ */
 public class Utils {
 
+    /**
+     * Color table of tetrominoes
+     * @return Array of Colors where are init colors
+     */
     public static Color[] getColorTable() {
         return new Color[]{
                 new Color(0, 0, 0),

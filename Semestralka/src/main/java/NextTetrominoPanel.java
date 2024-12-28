@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel which displays next tetromino and basic controls
+ *
+ * @author Matúš Meško
+ */
 public class NextTetrominoPanel extends JPanel {
 
     private Tetromino nextTetromino;
@@ -12,11 +17,19 @@ public class NextTetrominoPanel extends JPanel {
         this.colorTable = Utils.getColorTable();
     }
 
+    /**
+     * Setting which tetromino we want to display as next tetromino
+     * @param tetromino block to display
+     */
     public void setNextTetromino(Tetromino tetromino) {
         this.nextTetromino = tetromino;
         repaint(); // Repaint the panel to show the new Tetromino
     }
 
+    /**
+     * Draw components in panel
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -25,15 +38,27 @@ public class NextTetrominoPanel extends JPanel {
         }
     }
 
+    /**
+     * Get block width
+     * @return block width in int
+     */
     private int blockWidth() {
         return (int) getSize().getWidth() / 10;
     }
 
+    /**
+     * Get block height
+     * @return block height in int
+     */
     private int blockHeight() {
         return (int) getSize().getHeight() / 22;
     }
 
-
+    /**
+     * Draw all components (next tetromino and controls)
+     * @param g Graphics which will be protected
+     * @param tetromino current tetromino to display
+     */
     private void drawTetromino(Graphics g, Tetromino tetromino) {
         Color curColor = colorTable[tetromino.getShape().ordinal()]; // Default color, you can customize this based on the Tetromino type
         g.setColor(curColor);
@@ -55,6 +80,12 @@ public class NextTetrominoPanel extends JPanel {
         drawControls(g, 10, 550);
     }
 
+    /**
+     * Draw controls of the game
+     * @param g Graphics which will be protected
+     * @param x cords of strings
+     * @param y cords of strings
+     */
     private void drawControls(Graphics g, int x, int y) {
         g.drawString("W/\u2191 - Rotate Tetromino", x, y);
         g.drawString("A/\u2190 - Move Left", x, y + 30);

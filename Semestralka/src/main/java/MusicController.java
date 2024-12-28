@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Music Controller to access to playing music
+ * and controlling music
+ *
+ * @author Matúš Meško
+ */
 public class MusicController {
 
     private Clip clip;
@@ -16,6 +22,13 @@ public class MusicController {
     }
 
 
+    /**
+     * Play looped infinite music
+     * @param filepath path to the .vaw file
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
     public void playMusicLoop(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
 
@@ -33,6 +46,13 @@ public class MusicController {
         }
     }
 
+    /**
+     * Play music
+     * @param filepath file path to .vaw file
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
     public void playMusic(String filepath) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (!this.getCanPlay()) return;
 
@@ -49,6 +69,9 @@ public class MusicController {
         }
     }
 
+    /**
+     * Stop playing music
+     */
     public void stopMusic() {
         if (this.clip != null && this.clip.isRunning()) {
             this.clip.stop();
@@ -57,6 +80,9 @@ public class MusicController {
 
     }
 
+    /**
+     * Pause music
+     */
     public void pauseMusic() {
             if (this.clip != null && this.clip.isRunning()) {
                 this.clip.stop();
@@ -64,6 +90,9 @@ public class MusicController {
 
     }
 
+    /**
+     * Resume music
+     */
     public void resumeMusic() {
         if (!this.getCanPlay()) return;
         if (this.clip != null && !this.clip.isRunning()) {
@@ -72,10 +101,18 @@ public class MusicController {
 
     }
 
+    /**
+     *  Getter for boolean canPlay
+     * @return boolean if music can be played
+     */
     public boolean getCanPlay() {
         return canPlay;
     }
 
+    /**
+     * Setting atribute canPlay state
+     * @param canPlay boolean setting if music can be played
+     */
     public void setCanPlay(boolean canPlay) {
         this.canPlay = canPlay;
     }
