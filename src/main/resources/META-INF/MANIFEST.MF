@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+matus.Main-Class: matus.Main
+
